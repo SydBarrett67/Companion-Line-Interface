@@ -1,8 +1,16 @@
+#include <iostream>
 #include "ConfigParser.h"
 
 ConfigParser::ConfigParser(std::string cfgPath)
 {
     std::ifstream file(cfgPath);
+
+    std::cout << "Trying to open: " << cfgPath << "\n";
+
+    if (!file.is_open())
+    {
+        std::cout << "File non aperto\n";
+    }
 
     std::string line = "";
     while(std::getline(file, line)) {

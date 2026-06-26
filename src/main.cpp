@@ -4,73 +4,85 @@
 #include <vector>
 #include <mutex>
 #include <atomic>
+#include <filesystem>
 #include <windows.h>
+
 #include "Pet.h"
 #include "ConfigParser.h"
 
-// GLOBAL STATE
-struct State {
-    std::atomic<bool> running(true);
-    int TICK = 500;
+struct State
+{
+    std::atomic<bool> running{true};
+    int tick = 500;
 
     std::vector<Pet> pets;
     std::mutex mtx;
 };
 
-
-void gameLoop()
+void gameLoop(State& state)
 {
-    while (running)
+    while (state.running)
     {
         {
-            std::lock_guard<std::mutex> lock(mtx);
+            std::lock_guard<std::mutex> lock(state.mtx);
             std::cout << "Game tick\n";
-
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(TICK));
+        std::this_thread::sleep_for(
+            std::chrono::milliseconds(state.tick)
+        );
     }
 }
 
-void inputLoop()
+void inputLoop(State& state)
 {
     bool fWasPressed = false;
 
-    while (running)
+    while (state.running)
     {
         SHORT fState = GetAsyncKeyState('F');
-
         bool fIsPressed = (fState & 0x8000) != 0;
 
         if (fIsPressed && !fWasPressed)
         {
-            std::lock_guard<std::mutex> lock(mtx);
+            std::lock_guard<std::mutex> lock(state.mtx);
             std::cout << "FEED!\n";
         }
 
         fWasPressed = fIsPressed;
 
-        // ESC per uscire
         if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
         {
-            running = false;
+            state.running = false;
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(
+            std::chrono::milliseconds(10)
+        );
     }
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-    const std::string cfgPath = "config.txt";
-    ConfigParser cfgParser(cfgPath);
-
-    const auto& cfg = cfgParser.getConfig();
-    for (auto& key : cfg) {
-        std::cout << key.first << " is: " << key.second << "\n";
+    if (argc>2) {
+        if (argv[1] == "-new" || argv[1] == "-n") {
+            
+        }
     }
-    std::thread game(gameLoop);
-    std::thread input(inputLoop);
+    State state;
+
+    ConfigParser cfgParser("../config.txt");
+    const auto& cfg = cfgParser.getConfig();
+
+    for (const auto& [key, value] : cfg)
+    {
+        std::cout << key << " is: " << value << "\n";
+    }
+
+    state.tick = cfg.at("tick_ms");
+
+    std::thread game(gameLoop, std::ref(state));
+    std::thread input(inputLoop, std::ref(state));
 
     game.join();
     input.join();
