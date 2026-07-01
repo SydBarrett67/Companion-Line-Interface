@@ -1,11 +1,9 @@
 #include <iostream>
-#include "ConfigParser.h"
+#include "headers/ConfigParser.h"
 
 ConfigParser::ConfigParser(std::string cfgPath)
 {
     std::ifstream file(cfgPath);
-
-    std::cout << "Trying to open: " << cfgPath << "\n";
 
     if (!file.is_open())
     {

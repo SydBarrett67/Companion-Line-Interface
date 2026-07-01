@@ -2,4 +2,5 @@ snake.hungerdecay=604800
 snake.thirstdecay=86400
 snake.lifespan=365
 snake.sickchance=1000000
+snake.mooddecay=5
 tick_ms=500
