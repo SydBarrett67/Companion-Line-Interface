@@ -4,7 +4,6 @@
 #include <vector>
 #include <mutex>
 #include <atomic>
-#include <random>
 #include <filesystem>
 #include <windows.h>
 
@@ -12,6 +11,7 @@
 #include "headers/Pet.h"
 #include "headers/Vars.h"
 #include "headers/ConfigParser.h"
+#include "headers/CLI.h"
 
 struct State
 {
@@ -36,80 +36,41 @@ void gameLoop(State& state)
     }
 }
 
-void inputLoop(State& state)
+void inputLoop(State& state, CLI &cli)
 {
-    bool fWasPressed = false;
-
+    std::string command;
     while (state.running)
     {
-        SHORT fState = GetAsyncKeyState('F');
-        bool fIsPressed = (fState & 0x8000) != 0;
-
-        if (fIsPressed && !fWasPressed)
+        if (std::getline(std::cin, command))
         {
+            std::cout << "> ";
             std::lock_guard<std::mutex> lock(state.mtx);
+            cli.parseCommand(command);
         }
-
-        fWasPressed = fIsPressed;
-
-        if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
-        {
-            state.running = false;
-        }
-
-        std::this_thread::sleep_for(
-            std::chrono::milliseconds(100)
-        );
     }
 }
 
 int main(int argc, char* argv[])
 {
-    std::random_device rd;
-    std::mt19937 gen(rd());
+    std::srand(time(0));
+
+    // Global game state
     State state;
 
-    ConfigParser cfgParser("../config.txt");
+    // Parses and loads the config file
+    std::filesystem::path exePath(argv[0]);
+    std::filesystem::path exeDir = exePath.parent_path();
+    std::filesystem::path configPath = std::filesystem::absolute(exeDir / "../../config.txt");
+
+    ConfigParser cfgParser(configPath.string());    
     const auto& cfg = cfgParser.getConfig();
     state.tick = cfg.at("tick_ms");
-    
-    if (argc >= 4) {
-        if (std::strcmp(argv[1], "-new") == 0 || std::strcmp(argv[1], "-n") == 0) {
-            // Pet specific vars
-            std::string species = std::string(argv[3]);
-            
-            std::uniform_real_distribution<double> dis(0.90, 1.10);
 
-            Vars vars(
-                static_cast<int>(cfg.at(species + ".hungerdecay") * dis(gen)),
-                static_cast<int>(cfg.at(species + ".thirstdecay") * dis(gen)),
-                static_cast<int>(cfg.at(species + ".mooddecay")   * dis(gen)),
-                static_cast<int>(cfg.at(species + ".sickchance")  * dis(gen)),
-                static_cast<int>(cfg.at(species + ".lifespan")    * dis(gen))
-            );
-
-            Pet pet(argv[2], argv[3], vars);
-            if (argc >= 5) {
-                pet.setGender(argv[4][0]);
-                std::cout << "New pet created: " << argv[2] << " (" << argv[3] << ", " << argv[4][0] << ")\n";
-            }
-            else {
-                std::cout << "New pet created: " << argv[2] << " (" << argv[3] << ")\n";
-            }
-
-            std::string filename = argv[2] + std::string(".pet");
-            pet.saveToFile("../data/pets/", filename);
-
-            state.pets.push_back(pet);
-        }
-    }
-
-    for (const auto& pet : state.pets) {
-        std::cout << "Pet: " << pet.getName() << " (" << pet.getType() << ")\n";
-    }
+    // This parses and executes commands from the built-in CLI
+    CLI cli(state.pets, cfgParser.getConfig());
 
     std::thread game(gameLoop, std::ref(state));
-    std::thread input(inputLoop, std::ref(state));
+    std::thread input(inputLoop, std::ref(state), std::ref(cli));
 
     game.join();
     input.join();

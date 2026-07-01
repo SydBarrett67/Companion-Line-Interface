@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include "headers/Vars.h"
 
@@ -11,7 +13,7 @@ private:
     int thirst;
     bool isSick;
     int age;
-    char gender;
+    std::string gender;
     std::string type;
     std::string name;
 
@@ -23,7 +25,7 @@ private:
     int lifespan;
 
 public:
-    Pet(std::string name, std::string type, Vars vars, char gender=(std::rand() % 2 == 0 ? 'M' : 'F'));
+    Pet(std::string name, std::string type, Vars vars, std::string gender);
 
     // Getters
     std::string getName() const;
@@ -31,7 +33,13 @@ public:
 
     // Setters
     void setName(std::string name);
-    void setGender(char gender);
+
+    /*
+
+        INTERACTIONS
+
+    */
+    void feed(int amount = 100);
 
     void saveToFile(std::string path, std::string filename);
 

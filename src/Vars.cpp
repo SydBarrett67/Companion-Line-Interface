@@ -1,7 +1,12 @@
 #include <string>
 #include "headers/Vars.h"
 
-Vars::Vars(int hungerdecay, int thirstdecay, int mooddecay, int sickchance, int lifespan)
+Vars::Vars(int hungerdecay, int thirstdecay, int mooddecay, int sickchance, int lifespan) 
+    : hungerdecay(hungerdecay), 
+      thirstdecay(thirstdecay), 
+      mooddecay(mooddecay), 
+      sickchance(sickchance), 
+      lifespan(lifespan)
 {
     this->hungerdecay = hungerdecay;
     this->thirstdecay = thirstdecay;

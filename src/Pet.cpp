@@ -4,7 +4,7 @@
 #include "headers/Vars.h"
 #include "headers/Pet.h"
 
-Pet::Pet(std::string name, std::string type, Vars vars, char gender)
+Pet::Pet(std::string name, std::string type, Vars vars, std::string gender)
 {
     // Attribute initialization
     this->name = name;
@@ -25,6 +25,7 @@ Pet::Pet(std::string name, std::string type, Vars vars, char gender)
     this->lifespan = vars.getLifespan();
 }
 
+// Getters
 std::string Pet::getName() const {
     return this->name;
 }
@@ -36,10 +37,18 @@ std::string Pet::getType() const {
 void Pet::setName(std::string name) {
     this->name = name;
 }
-void Pet::setGender(char gender) {
-    this->gender = gender;
+
+/*
+
+    INTERACTIONS
+
+*/
+void Pet::feed(int amount) {
+    this->hunger -= amount;
+    if (this->hunger < 0) this->hunger = 0;
 }
 
+// Saving and data handling
 void Pet::saveToFile(std::string path, std::string filename) {
     std::ofstream file(path + filename);
 

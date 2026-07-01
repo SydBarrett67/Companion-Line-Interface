@@ -3,21 +3,22 @@
 
 ConfigParser::ConfigParser(std::string cfgPath)
 {
-    std::ifstream file(cfgPath);
+    try {
+        std::ifstream file(cfgPath);
 
-    if (!file.is_open())
-    {
-        std::cout << "File non aperto\n";
+        std::string line = "";
+        while(std::getline(file, line)) {
+            size_t pos = line.find('=');
+            std::string key = line.substr(0, pos);
+            std::string value = line.substr(pos + 1);
+            cfg[key] = stoi(value);
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Error opening config file: " << e.what() << "\n";
+        return;
     }
-
-    std::string line = "";
-    while(std::getline(file, line)) {
-        
-        size_t pos = line.find('=');
-        std::string key = line.substr(0, pos);
-        std::string value = line.substr(pos + 1);
-        cfg[key] = stoi(value);
-    }
+    
+    
 }
 
 const std::map<std::string, int> ConfigParser::getConfig() const{

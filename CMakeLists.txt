@@ -11,6 +11,7 @@ add_executable(pet
     src/Pet.cpp
     src/ConfigParser.cpp
     src/Vars.cpp
+    src/CLI.cpp
 )
 
 # Inclusione delle cartelle degli header
