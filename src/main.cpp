@@ -38,14 +38,19 @@ void gameLoop(State& state)
 
 void inputLoop(State& state, CLI &cli)
 {
+    system("cls");
     std::string command;
     while (state.running)
     {
+        std::cout << "> ";
         if (std::getline(std::cin, command))
         {
-            std::cout << "> ";
+            std::cout << "\n";
+            
             std::lock_guard<std::mutex> lock(state.mtx);
             cli.parseCommand(command);
+
+            std::cout << "\n";
         }
     }
 }

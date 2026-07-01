@@ -40,6 +40,7 @@ public:
 
     */
     void feed(int amount = 100);
+    void water(int amount = 100);
 
     void saveToFile(std::string path, std::string filename);
 

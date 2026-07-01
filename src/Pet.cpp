@@ -47,6 +47,10 @@ void Pet::feed(int amount) {
     this->hunger -= amount;
     if (this->hunger < 0) this->hunger = 0;
 }
+void Pet::water(int amount) {
+    this->thirst -= amount;
+    if (this->thirst < 0) this->thirst = 0;
+}
 
 // Saving and data handling
 void Pet::saveToFile(std::string path, std::string filename) {
@@ -62,9 +66,10 @@ void Pet::saveToFile(std::string path, std::string filename) {
         file << "isSick=" << this->isSick << "\n";
         file << "hunger=" << this->hunger << "\n";
         file << "thirst=" << this->thirst << "\n";
-        
+        file << "timestamp=" << std::time(nullptr) << "\n";
+        file.close();
     }
-} 
+}
 
 Pet::~Pet()
 {

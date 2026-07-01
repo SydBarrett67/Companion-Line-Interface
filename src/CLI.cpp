@@ -1,9 +1,10 @@
-#pragma once
-
-#include "headers/CLI.h"
 #include <iostream>
 #include <map>
+#include <sstream>
 #include <cstdlib>
+#include <filesystem>
+
+#include "headers/CLI.h"
 #include "headers/Pet.h"
 #include "headers/Vars.h"
 
@@ -32,25 +33,7 @@ void CLI::executeCommand()
 
     if (this->command.substr(0, 4) == "feed") {
         std::string target = this->command.substr(5, this->command.find(' ', 5) - 5);
-        if (!target.empty()) {
-            Pet *petToFeed = nullptr;
-            for (auto& pet : this->pets) {
-                if (pet.getName() == target) {
-                    petToFeed = &pet;
-                    break;
-                }
-            }
-            if (petToFeed) {
-                petToFeed->feed();
-            } else {
-                std::cerr << "Target pet not found for feed command.\n";
-            }
-        }
-        else {
-            std::cerr << "No target specified for feed command.\n";
-            return;
-        }
-
+        this->feed(target);
     }
 }
 
@@ -62,33 +45,71 @@ void CLI::executeCommand()
 // Pet creation
 void CLI::createNewPet()
 {
-    std::cout << "Creating new pet...\n";
-    std::string name = this->command.substr(5, this->command.find(' ', 5) - 5);
-    std::string type = this->command.substr(this->command.find(' ', 5) + 1);
-    std::string gender = this->command.substr(this->command.find(' ', this->command.find(' ', 5) + 1) + 1);
+
+    std::stringstream ss(this->command);
+    std::string cmd, name, type, gender;
+    ss >> cmd >> name >> type >> gender;
+
+    if (name.empty() || type.empty() || gender.empty()) {
+        std::cerr << "[!] Usage: -new <name> <type> <gender>\n";
+        return;
+    }
 
     float factor = (1.0f + ((std::rand() % 21) - 10) / 100.0f);
-    Vars vars(
-        static_cast<int>(this->cfg.at(type + ".hungerdecay") * factor),
-        static_cast<int>(this->cfg.at(type + ".thirstdecay") * factor),
-        static_cast<int>(this->cfg.at(type + ".mooddecay")   * factor),
-        static_cast<int>(this->cfg.at(type + ".sickchance")  * factor),
-        static_cast<int>(this->cfg.at(type + ".lifespan")    * factor)
-    );
+    
+    // Inseriamo il blocco try per intercettare i crash da config mancante
+    try {
+        Vars vars(
+            static_cast<int>(this->cfg.at(type + ".hungerdecay") * factor),
+            static_cast<int>(this->cfg.at(type + ".thirstdecay") * factor),
+            static_cast<int>(this->cfg.at(type + ".mooddecay")   * factor),
+            static_cast<int>(this->cfg.at(type + ".sickchance")  * factor),
+            static_cast<int>(this->cfg.at(type + ".lifespan")    * factor)
+        );
 
-    Pet pet(name, type, vars, gender);
-    std::cout << "New pet created: " << name << " (" << type << ", " << gender << ")\n";
+        Pet pet(name, type, vars, gender);
+        std::cout << "New pet created: " << name << " (" << type << ", " << gender << ")\n";
 
-    std::string filename = name + std::string(".pet");
-    pet.saveToFile("../data/pets/", filename);
+        std::filesystem::path folderPath = std::filesystem::absolute("data/pets/");
+        std::string filename = name + ".pet";
 
-    this->pets.push_back(Pet(name, type, vars, gender));
+        std::filesystem::create_directories(folderPath);
+
+        std::filesystem::path fullFilePath = folderPath / filename;
+
+        pet.saveToFile(fullFilePath.string(), ""); 
+
+        this->pets.push_back(std::move(pet));
+
+    } 
+    catch (const std::out_of_range& e) {
+        std::cerr << "[!] Type: '" << type 
+                  << "' not configured correctly.\n"
+                  << "(Details: " << e.what() << ")\n";
+    }
 }
 
 // Interaction commands
-void CLI::feed()
+void CLI::feed(std::string target)
 {
-    // Implementation for feeding a pet
+    if (!target.empty()) {
+        Pet *petToFeed = nullptr;
+        for (auto& pet : this->pets) {
+            if (pet.getName() == target) {
+                petToFeed = &pet;
+                break;
+            }
+        }
+        if (petToFeed) {
+            petToFeed->feed();
+        } else {
+            std::cerr << "Pet not found.\n";
+        }
+    }
+    else {
+        std::cerr << "No target specified for feed command.\n";
+        return;
+    }
 }
 
 

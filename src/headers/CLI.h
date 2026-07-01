@@ -8,7 +8,7 @@
 class CLI {
 private:
     std::vector<Pet>& pets;
-    const std::map<std::string, int>& cfg;
+    const std::map<std::string, int> cfg;
     std::vector<std::string> acceptedCommands = {
         // Animal handling commands
         "-new",
@@ -40,7 +40,7 @@ public:
     void createNewPet();
 
     // Interaction commands
-    void feed();
+    void feed(std::string target);
     void water();
 
     ~CLI();
