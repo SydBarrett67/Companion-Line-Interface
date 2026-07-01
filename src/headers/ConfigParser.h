@@ -8,6 +8,8 @@ class ConfigParser
 {
 private:
     std::map<std::string, int> cfg;
+
+
 public:
     ConfigParser(std::string cfgPath);
 

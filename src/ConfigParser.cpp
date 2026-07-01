@@ -18,7 +18,6 @@ ConfigParser::ConfigParser(std::string cfgPath)
         return;
     }
     
-    
 }
 
 const std::map<std::string, int> ConfigParser::getConfig() const{

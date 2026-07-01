@@ -12,6 +12,7 @@
 #include "headers/Vars.h"
 #include "headers/ConfigParser.h"
 #include "headers/CLI.h"
+#include "headers/TimeMachine.h"
 
 struct State
 {
@@ -28,6 +29,9 @@ void gameLoop(State& state)
     {
         {
             std::lock_guard<std::mutex> lock(state.mtx);
+            for (auto& pet : state.pets) {
+                TimeMachine.process(pet);
+            }
         }
 
         std::this_thread::sleep_for(
@@ -46,7 +50,7 @@ void inputLoop(State& state, CLI &cli)
         if (std::getline(std::cin, command))
         {
             std::cout << "\n";
-            
+
             std::lock_guard<std::mutex> lock(state.mtx);
             cli.parseCommand(command);
 
@@ -72,7 +76,7 @@ int main(int argc, char* argv[])
     state.tick = cfg.at("tick_ms");
 
     // This parses and executes commands from the built-in CLI
-    CLI cli(state.pets, cfgParser.getConfig());
+    CLI cli(state.pets, cfg);
 
     std::thread game(gameLoop, std::ref(state));
     std::thread input(inputLoop, std::ref(state), std::ref(cli));

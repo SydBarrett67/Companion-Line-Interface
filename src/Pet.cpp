@@ -52,6 +52,30 @@ void Pet::water(int amount) {
     if (this->thirst < 0) this->thirst = 0;
 }
 
+/*
+
+    STATS DECREASE
+
+*/
+void Pet::decreaseHunger(int tick, int timeElapsed) {
+    this->hunger += this->hungerdecay * timeElapsed / tick;
+    if (this->hunger > 100) this->hunger = 100;
+}
+void Pet::decreaseThirst(int tick, int timeElapsed) {
+    this->thirst += this->thirstdecay * timeElapsed / tick;
+    if (this->thirst > 100) this->thirst = 100;
+}
+void Pet::decreaseMood(int tick, int timeElapsed) {
+    this->mood -= this->mooddecay * timeElapsed / tick;
+    if (this->mood < 0) this->mood = 0;
+}
+void Pet::increaseAge(int tick, int timeElapsed) {
+    this->age += timeElapsed / tick;
+    if (this->age > this->lifespan) this->age = this->lifespan;
+}
+
+
+
 // Saving and data handling
 void Pet::saveToFile(std::string path, std::string filename) {
     std::ofstream file(path + filename);
@@ -70,6 +94,7 @@ void Pet::saveToFile(std::string path, std::string filename) {
         file.close();
     }
 }
+
 
 Pet::~Pet()
 {

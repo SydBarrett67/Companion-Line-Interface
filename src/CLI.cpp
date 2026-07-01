@@ -103,11 +103,11 @@ void CLI::feed(std::string target)
         if (petToFeed) {
             petToFeed->feed();
         } else {
-            std::cerr << "Pet not found.\n";
+            std::cerr << "[!] Usage: feed <pet_name>\n";
         }
     }
     else {
-        std::cerr << "No target specified for feed command.\n";
+        std::cerr << "[!] Usage: feed <pet_name>\n";
         return;
     }
 }
