@@ -22,15 +22,15 @@ private:
     
 
     // Specific decays
-    std::size_t hungerdecay;
-    std::size_t thirstdecay;
-    std::size_t mooddecay;
+    std::size_t hungerMax;
+    std::size_t thirstMax;
+    std::size_t moodMax;
     std::size_t sickchance;
     std::size_t lifespan;
 
 public:
     Pet(std::string name, std::string type, Vars vars, std::string gender);
-    Pet(std::string name, std::string type, std::size_t age, Vars vars, std::string gender);
+    Pet(std::string name, std::string type, Vars decays, Vars details, std::string gender);
 
     // Getters
     std::string getName() const;
@@ -45,13 +45,13 @@ public:
         std::size_tERACTIONS
 
     */
-    void feed(std::size_t amount = 100);
-    void water(std::size_t amount = 100);
+    void feed();
+    void water();
 
 
     /*
 
-        STATS DECREASE
+        STATS ACTIONS
 
     */
     void increaseHunger(std::size_t tick = 1000, std::size_t timeElapsed = 1000);

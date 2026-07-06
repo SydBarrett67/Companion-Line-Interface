@@ -1,11 +1,6 @@
-snake.hungerdecay=604800
-snake.thirstdecay=86400
-snake.lifespan=31536000000
+snake.hungermax=604800
+snake.thirstmax=86400
+snake.moodmax=604800
+snake.lifespan=31536000
 snake.sickchance=1000000
-snake.mooddecay=5
-rabbit.hungerdecay=43200
-rabbit.thirstdecay=86400
-rabbit.lifespan=146
-rabbit.sickchance=1000000
-rabbit.mooddecay=15
-tick_ms=1000
+tick_s=1

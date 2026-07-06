@@ -22,9 +22,9 @@ private:
 
 public:
 
-    std::size_t getHungerDecay() const { return hungerdecay; }
-    std::size_t getThirstDecay() const { return thirstdecay; }
-    std::size_t getMoodDecay() const { return mooddecay; }
+    std::size_t getHungerMax() const { return hungerdecay; }
+    std::size_t getThirstMax() const { return thirstdecay; }
+    std::size_t getMoodMax() const { return mooddecay; }
     std::size_t getSickChance() const { return sickchance; }
     std::size_t getLifespan() const { return lifespan; }
 

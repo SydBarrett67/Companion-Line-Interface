@@ -58,11 +58,11 @@ void CLI::createNewPet()
     
     try {
         Vars vars(
-            static_cast<int>(this->cfg.at(type + ".hungerdecay") * factor),
-            static_cast<int>(this->cfg.at(type + ".thirstdecay") * factor),
-            static_cast<int>(this->cfg.at(type + ".mooddecay")   * factor),
-            static_cast<int>(this->cfg.at(type + ".sickchance")  * factor),
-            static_cast<int>(this->cfg.at(type + ".lifespan")    * factor)
+            static_cast<std::size_t>(this->cfg.at(type + ".hungermax") * factor),
+            static_cast<std::size_t>(this->cfg.at(type + ".thirstmax") * factor),
+            static_cast<std::size_t>(this->cfg.at(type + ".moodmax")   * factor),
+            static_cast<std::size_t>(this->cfg.at(type + ".sickchance")  * factor),
+            static_cast<std::size_t>(this->cfg.at(type + ".lifespan")    * factor)
         );
 
         Pet pet(name, type, vars, gender);

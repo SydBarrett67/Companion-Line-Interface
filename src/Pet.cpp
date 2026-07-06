@@ -1,5 +1,6 @@
 #include <string>
 #include <fstream>
+#include <algorithm>
 #include <random>
 #include "headers/Vars.h"
 #include "headers/Pet.h"
@@ -12,21 +13,21 @@ Pet::Pet(std::string name, std::string type, Vars vars, std::string gender)
     this->gender = gender;
 
     this->hp = 100;
-    this->mood = 100;
+    this->mood = vars.getMoodMax();
     this->age = 0;
     this->isSick = false;
     this->hunger = 0;
     this->thirst = 0;
 
     // Specific decays initialization
-    this->hungerdecay = vars.getHungerDecay();
-    this->thirstdecay = vars.getThirstDecay();
-    this->mooddecay = vars.getMoodDecay();
+    this->hungerMax = vars.getHungerMax();
+    this->thirstMax = vars.getThirstMax();
+    this->moodMax = vars.getMoodMax();
     this->sickchance = vars.getSickChance();
     this->lifespan = vars.getLifespan();
 }
 
-Pet::Pet(std::string name, std::string type, std::size_t age, Vars decays, Vars details, std::string gender) {
+Pet::Pet(std::string name, std::string type, Vars decays, Vars details, std::string gender) {
     // Attribute initialization
     this->name = name;
     this->type = type;
@@ -36,13 +37,13 @@ Pet::Pet(std::string name, std::string type, std::size_t age, Vars decays, Vars 
     this->mood = details.getMood();
     this->age = details.getAge();
     this->isSick = false;
-    this->hunger = 0;
-    this->thirst = 0;
+    this->hunger = details.getHunger();
+    this->thirst = details.getThirst();
 
     // Specific decays initialization
-    this->hungerdecay = decays.getHungerDecay();
-    this->thirstdecay = decays.getThirstDecay();
-    this->mooddecay = decays.getMoodDecay();
+    this->hungerMax = decays.getHungerMax();
+    this->thirstMax = decays.getThirstMax();
+    this->moodMax = decays.getMoodMax();
     this->sickchance = decays.getSickChance();
     this->lifespan = decays.getLifespan();
 }
@@ -80,13 +81,11 @@ void Pet::setName(std::string name) {
     Interactions
 
 */
-void Pet::feed(std::size_t amount) {
-    this->hunger -= amount;
-    if (this->hunger < 0) this->hunger = 0;
+void Pet::feed() {
+    this->hunger = 0;
 }
-void Pet::water(std::size_t amount) {
-    this->thirst -= amount;
-    if (this->thirst < 0) this->thirst = 0;
+void Pet::water() {
+    this->thirst = 0;
 }
 
 /*
@@ -95,15 +94,15 @@ void Pet::water(std::size_t amount) {
 
 */
 void Pet::increaseHunger(std::size_t tick, std::size_t timeElapsed) {
-    this->hunger += this->hungerdecay * timeElapsed / tick;
-    if (this->hunger > 100) this->hunger = 100;
+    this->hunger += timeElapsed / tick;
+    if (this->hunger > this->hungerMax) this->hunger = this->hungerMax;
 }
 void Pet::increaseThirst(std::size_t tick, std::size_t timeElapsed) {
-    this->thirst += this->thirstdecay * timeElapsed / tick;
-    if (this->thirst > 100) this->thirst = 100;
+    this->thirst += timeElapsed / tick;
+    if (this->thirst > this->thirstMax) this->thirst = this->thirstMax;
 }
 void Pet::decreaseMood(std::size_t tick, std::size_t timeElapsed) {
-    this->mood -= this->mooddecay * timeElapsed / tick;
+    this->mood -= timeElapsed / tick;
     if (this->mood < 0) this->mood = 0;
 }
 void Pet::increaseAge(std::size_t tick, std::size_t timeElapsed) {
@@ -127,12 +126,12 @@ void Pet::saveToFile(std::string path, std::string filename) {
         file << "isSick=" << this->isSick << "\n";
         file << "hunger=" << this->hunger << "\n";
         file << "thirst=" << this->thirst << "\n";
-        file << "hungerdecay" << this->hungerdecay << "\n";
-        file << "thirstdecay" << this->thirstdecay << "\n";
-        file << "mooddecay" << this->mooddecay << "\n";
-        file << "sickchance" << this->sickchance << "\n";
-        file << "lifespan" << this->lifespan << "\n";
-        file << "timestamp=" << std::time(nullptr) << "\n";
+        file << "hungermax=" << this->hungerMax << "\n";
+        file << "thirstmax=" << this->thirstMax << "\n";
+        file << "moodmax=" << this->moodMax << "\n";
+        file << "sickchance=" << this->sickchance << "\n";
+        file << "lifespan=" << this->lifespan << "\n";
+        file << "timestamp=" << std::time(nullptr);
         file.close();
     }
 }

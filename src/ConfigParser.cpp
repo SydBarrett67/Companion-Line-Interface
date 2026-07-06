@@ -27,7 +27,7 @@ const std::map<std::string, std::size_t> ConfigParser::getConfig() const{
     return this->cfg;
 }
 
-void ConfigParser::loadPets(std::string path, std::vector<Pet&> pets)
+void ConfigParser::loadPets(std::string path, std::vector<Pet> *pets)
 {
     for (const auto& entry : std::filesystem::directory_iterator(path)) {
         if (entry.path().extension() == ".pet") {
@@ -41,7 +41,7 @@ void ConfigParser::loadPets(std::string path, std::vector<Pet&> pets)
             std::size_t hp, age, thirst, hunger, mood,
 
             // Specific decays
-                        hungerdecay, thirstdecay, mooddecay, sickchance, lifespan;
+                        hungerMax, thirstMax, moodmax, sickchance, lifespan;
             
             bool sick;
             std::string line;
@@ -65,14 +65,14 @@ void ConfigParser::loadPets(std::string path, std::vector<Pet&> pets)
                 else if (key == "isSick") sick = static_cast<bool>(std::stoi(value));
 
                 // Specific decays
-                else if (key == "hungerdecay") hungerdecay = std::size_t(std::stoull(value));
-                else if (key == "thirstdecay") thirstdecay = std::size_t(std::stoull(value));
-                else if (key == "mooddecay") mooddecay = std::size_t(std::stoull(value));
+                else if (key == "hungermax") hungerMax = std::size_t(std::stoull(value));
+                else if (key == "thirstmax") thirstMax = std::size_t(std::stoull(value));
+                else if (key == "moodmax") moodmax = std::size_t(std::stoull(value));
                 else if (key == "sickchance") sickchance = std::size_t(std::stoull(value));
                 else if (key == "lifespan") lifespan = std::size_t(std::stoull(value));
             }
 
-            pets.push_back(Pet(name, type, age, Vars(hungerdecay, thirstdecay, mooddecay, sickchance, lifespan), Vars(hp, age, sick, hunger, thirst, mood), gender));
+            pets->push_back(Pet(name, type, Vars(hungerMax, thirstMax, moodmax, sickchance, lifespan), Vars(hp, age, sick, hunger, thirst, mood), gender));
         }
     }
 }

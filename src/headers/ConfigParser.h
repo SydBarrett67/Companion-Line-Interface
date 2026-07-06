@@ -15,7 +15,7 @@ public:
 
     const std::map<std::string, std::size_t> getConfig() const;
 
-    void loadPets(std::string path, std::vector<Pet&> pets);
+    void loadPets(std::string path, std::vector<Pet> *pets);
 
     ~ConfigParser();
 };
