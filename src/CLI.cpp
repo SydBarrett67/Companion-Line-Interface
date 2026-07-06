@@ -8,7 +8,7 @@
 #include "headers/Pet.h"
 #include "headers/Vars.h"
 
-CLI::CLI(std::vector<Pet>& pets, const std::map<std::string, int>& cfg) : pets(pets), cfg(cfg)
+CLI::CLI(std::vector<Pet>& pets, const std::map<std::string, std::size_t>& cfg) : pets(pets), cfg(cfg)
 {
     
 }
@@ -29,7 +29,6 @@ void CLI::executeCommand()
     if (this->command.substr(0, 4) == "-new") {
         this->createNewPet();
     }
-
 
     if (this->command.substr(0, 4) == "feed") {
         std::string target = this->command.substr(5, this->command.find(' ', 5) - 5);
@@ -57,7 +56,6 @@ void CLI::createNewPet()
 
     float factor = (1.0f + ((std::rand() % 21) - 10) / 100.0f);
     
-    // Inseriamo il blocco try per intercettare i crash da config mancante
     try {
         Vars vars(
             static_cast<int>(this->cfg.at(type + ".hungerdecay") * factor),

@@ -1,6 +1,6 @@
 snake.hungerdecay=604800
 snake.thirstdecay=86400
-snake.lifespan=365
+snake.lifespan=31536000000
 snake.sickchance=1000000
 snake.mooddecay=5
 rabbit.hungerdecay=43200

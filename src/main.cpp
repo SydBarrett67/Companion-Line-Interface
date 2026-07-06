@@ -14,6 +14,7 @@
 #include "headers/CLI.h"
 #include "headers/TimeMachine.h"
 
+// Game state structure
 struct State
 {
     std::atomic<bool> running{true};
@@ -29,8 +30,10 @@ void gameLoop(State& state)
     {
         {
             std::lock_guard<std::mutex> lock(state.mtx);
-            for (auto& pet : state.pets) {
-                TimeMachine.process(pet);
+            // Advance the state of each pet based on the tick interval
+            for (Pet& p : state.pets) {
+                const std::size_t timeSinceLastUpdate = p.getLastTimeStamp();
+                TimeMachine::process(p, state.tick, timeSinceLastUpdate);
             }
         }
 
@@ -42,7 +45,6 @@ void gameLoop(State& state)
 
 void inputLoop(State& state, CLI &cli)
 {
-    system("cls");
     std::string command;
     while (state.running)
     {
@@ -70,14 +72,14 @@ int main(int argc, char* argv[])
     std::filesystem::path exePath(argv[0]);
     std::filesystem::path exeDir = exePath.parent_path();
     std::filesystem::path configPath = std::filesystem::absolute(exeDir / "../../config.txt");
-
     ConfigParser cfgParser(configPath.string());    
     const auto& cfg = cfgParser.getConfig();
     state.tick = cfg.at("tick_ms");
 
-    // This parses and executes commands from the built-in CLI
+    // Built-in CLI for user input
     CLI cli(state.pets, cfg);
 
+    system("cls");
     std::thread game(gameLoop, std::ref(state));
     std::thread input(inputLoop, std::ref(state), std::ref(cli));
 

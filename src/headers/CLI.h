@@ -8,7 +8,7 @@
 class CLI {
 private:
     std::vector<Pet>& pets;
-    const std::map<std::string, int> cfg;
+    const std::map<std::string, std::size_t> cfg;
     std::vector<std::string> acceptedCommands = {
         // Animal handling commands
         "-new",
@@ -31,7 +31,7 @@ private:
 
 
 public:
-    CLI(std::vector<Pet>& pets, const std::map<std::string, int>& cfg);
+    CLI(std::vector<Pet>& pets, const std::map<std::string, std::size_t>& cfg);
 
     void parseCommand(std::string command);
     void executeCommand();
