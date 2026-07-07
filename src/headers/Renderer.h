@@ -5,34 +5,25 @@
 #endif
 
 #include <iostream>
+#include <map>
 #include <string>
+
+#define CLIStartRow 15
+#define CLIEndRow 30
 
 class Renderer {
 private:
-    /* data */
+    std::map<std::string, int> anims;
+
 public:
     static void drawPet(Pet& petToDraw) {
-        std::string type = petToDraw.getType();
+        std::cout << "\033[s";
+
         std::cout << "\033[1;1H";
-    
-        std::cout << "===============================\n";
-        std::cout << "       ( ASCII ART QUI )       \n";
-        std::cout << "===============================\n";
-        std::cout << "===============================\n";
-        std::cout << "===============================\n";
-        std::cout << "===============================\n";
-        std::cout << "===============================\n";
-        std::cout << "===============================\n";
-        std::cout << "===============================\n";
-        std::cout << "===============================\n";
-        std::cout << "===============================\n";
-        std::cout << "===============================\n";
-        std::cout << "===============================\n";
-        std::cout << "===============================\n";
-        std::cout << "===============================\n";
+        std::cout << "=== PET PANEL ===\n";
+        std::cout << "[ ASCII ART ]\n";
 
-
-        std::cout << "\033[16;1H" << std::flush;
+        std::cout << "\033[u" << std::flush;
     }
 
     static void init_terminal() {
@@ -45,13 +36,14 @@ public:
         }
         #endif
 
-        std::cout << "\033[2J\033[H" << "\033[?25l" << std::flush;
+        // Clear
+        std::cout << "\033[2J\033[H\033[?25l";
 
-        std::cout << "\033[16;r"; 
+        // Scroll
+        std::cout << "\033[15;r"; 
 
-        std::cout << "\033[2J\033[16;1H";
-
-        std::cout << "\033[16;1H" << std::flush;
+        // Cursor on CLI start
+        std::cout << "\033[30;1H" << std::flush;
     }
 };
 

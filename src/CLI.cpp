@@ -9,6 +9,9 @@
 #include "headers/Vars.h"
 #include "headers/Logger.h"
 
+#define CLIStartRow 15
+#define CLIEndRow 30
+
 CLI::CLI(std::vector<Pet>& pets, const std::map<std::string, std::size_t>& cfg, Logger& logger) 
     :   pets(pets), cfg(cfg), logger(logger)
 {
@@ -22,7 +25,7 @@ void CLI::parseCommand(std::string command)
         this->command = command;
         this->executeCommand();
     } else {
-        std::cerr << "Command not recognized: " << cmd << "\n";
+        std::cout << "\033[30;1H\033[K\033[1;31mCommand not recognized: " << cmd << "\033[0m\n";
     }
 }
 
@@ -40,7 +43,7 @@ void CLI::executeCommand()
     }
     if (this->command.substr(0, 5) == "water") {
         std::string target = this->command.substr(5, this->command.find(' ', 5) - 5);
-        this->feed(target);
+        this->water(target);
     }
 
 
@@ -51,10 +54,14 @@ void CLI::executeCommand()
 
     // CLI utilities
     if (this->command.substr(0, 5) == "clear") {
-        system("CLS");
+        for (int i = CLIStartRow; i <= CLIEndRow; ++i) {
+            std::cout << "\033[" << i << ";1H\033[K";
+        }
     }
     if (this->command.substr(0, 5) == "exit" || this->command.substr(0, 4) == "quit") {
-        std::cout << "\nExiting program...";
+        std::cout << "\033[30;1H\nExiting program...\n\033[?25h";
+        system("PAUSE");
+        system("CLS");
         exit(0);
     }
 
@@ -69,7 +76,6 @@ void CLI::executeCommand()
 // Pet creation
 void CLI::createNewPet()
 {
-
     std::stringstream ss(this->command);
     std::string cmd, name, type, gender;
     ss >> cmd >> name >> type >> gender;
@@ -79,7 +85,7 @@ void CLI::createNewPet()
         return;
     }
 
-    float factor = (1.0f + ((std::rand() % 21) - 10) / 100.0f);
+    float factor = (1.0f + ((std::rand() % 21) - CLIEndRow) / 100.0f);
     
     try {
         Vars vars(
@@ -125,6 +131,7 @@ void CLI::feed(std::string target)
         }
         if (petToFeed) {
             petToFeed->feed();
+            std::cout << target << "  has been fed successfully!";
         } else {
             std::cerr << "[!] Usage: feed <pet_name>\n";
         }
@@ -145,7 +152,8 @@ void CLI::water(std::string target)
             }
         }
         if (petToWater) {
-            petToWater->feed();
+            petToWater->water();
+            std::cout << target << "  has been successfully given water!";
         } else {
             std::cerr << "[!] Usage: water <pet_name>\n";
         }

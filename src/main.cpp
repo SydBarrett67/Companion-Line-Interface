@@ -64,21 +64,18 @@ void inputLoop(State& state, CLI &cli)
     std::string command;
     while (state.running)
     {
-        std::cout << "> ";
+        std::cout << "> " << std::flush;
         if (std::getline(std::cin, command))
         {
-            std::cout << "\n";
-
             std::lock_guard<std::mutex> lock(state.mtx);
             cli.parseCommand(command);
-
-            std::cout << "\n";
         }
     }
 }
 
 int main(int argc, char* argv[])
 {
+    system("cls");
     // Renderer init
     Renderer::init_terminal();
 
@@ -105,7 +102,6 @@ int main(int argc, char* argv[])
     CLI cli(state.pets, cfg, logger);
 
     // Thread creation & start
-    system("cls");
     std::thread game(gameLoop, std::ref(state));
     std::thread input(inputLoop, std::ref(state), std::ref(cli));
 
