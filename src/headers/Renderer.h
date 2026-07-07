@@ -14,11 +14,7 @@
 
 class Renderer {
 private:
-    inline static const std::map<std::string, std::vector<std::string>> anims = {
-        { "snake", {
-            "frame1", "frame2", "frame3"
-        } },
-    };
+    inline static std::map<std::string, std::vector<std::string>> anims;
 
 public:
     static void drawPet(Pet& petToDraw, int animIndex) {
@@ -49,6 +45,45 @@ public:
 
         // Cursor on CLI start
         std::cout << "\033[30;1H" << std::flush;
+    }
+
+    static void loadAnimationsFromFile(std::string path) {
+        for (const auto& entry : std::filesystem::directory_iterator(path)) {
+            std::filesystem::path filePath = entry.path(); 
+            if (std::filesystem::is_regular_file(filePath)) {
+                std::ifstream file(filePath);
+                
+                if (file.is_open()) {
+                    std::vector<std::string> frames;
+                    std::string line;
+                    std::string currentFrame = "";
+                    
+                    // Separator
+                    const std::string separator = "SEPARATOR"; 
+
+                    while (std::getline(file, line)) {
+                        if (line == separator) {
+                            // Frame's end
+                            if (!currentFrame.empty()) {
+                                frames.push_back(currentFrame);
+                                currentFrame = ""; // Reset for next frame
+                            }
+                        } else {
+                            // Add line to current frame
+                            currentFrame += line + "\n";
+                        }
+                    }
+
+                    if (!currentFrame.empty()) {
+                        frames.push_back(currentFrame);
+                    }
+
+                    std::string petName = filePath.stem().string(); 
+
+                    anims.insert({ petName, frames });
+                }
+            }
+        }
     }
 };
 
