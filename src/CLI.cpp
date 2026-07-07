@@ -7,8 +7,10 @@
 #include "headers/CLI.h"
 #include "headers/Pet.h"
 #include "headers/Vars.h"
+#include "headers/Logger.h"
 
-CLI::CLI(std::vector<Pet>& pets, const std::map<std::string, std::size_t>& cfg) : pets(pets), cfg(cfg)
+CLI::CLI(std::vector<Pet>& pets, const std::map<std::string, std::size_t>& cfg, Logger& logger) 
+    :   pets(pets), cfg(cfg), logger(logger)
 {
     
 }
@@ -26,14 +28,37 @@ void CLI::parseCommand(std::string command)
 
 void CLI::executeCommand()
 {
+    // Pet creation
     if (this->command.substr(0, 4) == "-new") {
         this->createNewPet();
     }
 
+    // Pet interaction
     if (this->command.substr(0, 4) == "feed") {
         std::string target = this->command.substr(5, this->command.find(' ', 5) - 5);
         this->feed(target);
     }
+    if (this->command.substr(0, 5) == "water") {
+        std::string target = this->command.substr(5, this->command.find(' ', 5) - 5);
+        this->feed(target);
+    }
+
+
+    // Game commands
+    if (this->command.substr(0, 6) == "--help") {
+        this->help();
+    }
+
+    // CLI utilities
+    if (this->command.substr(0, 5) == "clear") {
+        system("CLS");
+    }
+    if (this->command.substr(0, 5) == "exit" || this->command.substr(0, 4) == "quit") {
+        std::cout << "\nExiting program...";
+        exit(0);
+    }
+
+    this->logger.log(command);
 }
 
 /*
@@ -109,8 +134,48 @@ void CLI::feed(std::string target)
         return;
     }
 }
+void CLI::water(std::string target)
+{
+    if (!target.empty()) {
+        Pet *petToWater = nullptr;
+        for (auto& pet : this->pets) {
+            if (pet.getName() == target) {
+                petToWater = &pet;
+                break;
+            }
+        }
+        if (petToWater) {
+            petToWater->feed();
+        } else {
+            std::cerr << "[!] Usage: water <pet_name>\n";
+        }
+    }
+    else {
+        std::cerr << "[!] Usage: water <pet_name>\n";
+        return;
+    }
+}
 
+// "-help" command
+void CLI::help() {
+    std::cout   << "Command list:\n"
+                << "COMMAND     |   USAGE\n"
+                << "-new        :   -new <name> <type> <gender>\n"    // Create new animal
+                << "-checkout   :   -checkout <name>\n"               // Select another animal from list
+                << "-delete     :   -delete <name>\n"                 // Delete an animal .pet file
+                << "-stats      :   -stats {name}\n"                  // Get single or all animals stats
 
+    // Animal interaction commands
+                << "feed        :   feed <name>\n"                    // Feed pet
+                << "water       :   water <name>\n"                   // Give water to pet
+                << "play        :   play <minigame-name> <name>\n"    // Play a minigame with pet
+                << "heal        :   heal <name>\n"                    // Attempts to heal sick pet
+        
+    // Game commands
+                << "--save      :   --save\n"     // Forces saving on all animals if needed
+                << "--load      :   --load\n"     // Reloads all animals if needed
+                << "--help      :   --help\n";    // Prints all commands usages
+}
 
 CLI::~CLI()
 {

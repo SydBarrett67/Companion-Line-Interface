@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <vector>
 #include <fstream>
 
 class ConfigParser

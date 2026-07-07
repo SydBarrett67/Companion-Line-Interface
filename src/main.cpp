@@ -13,6 +13,7 @@
 #include "headers/ConfigParser.h"
 #include "headers/CLI.h"
 #include "headers/TimeMachine.h"
+#include "headers/Logger.h"
 
 // Game state structure
 struct State
@@ -67,18 +68,23 @@ int main(int argc, char* argv[])
 
     // Global game state
     State state;
-
+    
     // Parses and loads config file and pets files
     std::filesystem::path exePath(argv[0]);
     std::filesystem::path exeDir = exePath.parent_path();
     std::filesystem::path configPath = std::filesystem::absolute(exeDir / "../../config.txt");
+    std::filesystem::path logPath = std::filesystem::absolute(exeDir / "../../data/log.txt");
+    std::filesystem::path statsPath = std::filesystem::absolute(exeDir / "../../data/stats.txt");
+
+    Logger logger(logPath.string(), statsPath.string());
     ConfigParser cfgParser(configPath.string());    
+    
     const auto& cfg = cfgParser.getConfig();
     state.tick = cfg.at("tick_s");
     cfgParser.loadPets((std::filesystem::absolute(exeDir / "../../data/pets")).string(), &state.pets);
 
     // Built-in CLI for user input
-    CLI cli(state.pets, cfg);
+    CLI cli(state.pets, cfg, logger);
 
     // Thread creation & start
     system("cls");
