@@ -53,7 +53,7 @@ void CLI::executeCommand()
     }
 
     // CLI utilities
-    if (this->command.substr(0, 5) == "clear") {
+    if (this->command.substr(0, 5) == "clear" || this->command.substr(0,3) == "cls") {
         for (int i = CLIStartRow; i <= CLIEndRow; ++i) {
             std::cout << "\033[" << i << ";1H\033[K";
         }
@@ -131,7 +131,7 @@ void CLI::feed(std::string target)
         }
         if (petToFeed) {
             petToFeed->feed();
-            std::cout << target << "  has been fed successfully!";
+            std::cout << target << "  has been fed successfully!\n";
         } else {
             std::cerr << "[!] Usage: feed <pet_name>\n";
         }

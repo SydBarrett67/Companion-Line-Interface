@@ -50,7 +50,7 @@ void gameLoop(State& state)
             */
             Renderer::drawPet(state.pets.at(0), animIndex);
 
-            animIndex = (animIndex + 1) % 3;
+            animIndex = (animIndex + 1) % 2;
         }
 
         std::this_thread::sleep_for(
@@ -76,8 +76,14 @@ void inputLoop(State& state, CLI &cli)
 int main(int argc, char* argv[])
 {
     system("cls");
+
+    // Get exePath
+    std::filesystem::path exePath(argv[0]);
+    std::filesystem::path exeDir = exePath.parent_path();
+
     // Renderer init
     Renderer::init_terminal();
+    Renderer::loadAnimationsFromFile(std::filesystem::absolute(exeDir / "../../animations/").string());
 
     std::srand(time(0));
 
@@ -85,8 +91,6 @@ int main(int argc, char* argv[])
     State state;
     
     // Parses and loads config file and pets files
-    std::filesystem::path exePath(argv[0]);
-    std::filesystem::path exeDir = exePath.parent_path();
     std::filesystem::path configPath = std::filesystem::absolute(exeDir / "../../config.txt");
     std::filesystem::path logPath = std::filesystem::absolute(exeDir / "../../data/log.txt");
     std::filesystem::path statsPath = std::filesystem::absolute(exeDir / "../../data/stats.txt");

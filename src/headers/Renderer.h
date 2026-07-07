@@ -22,7 +22,7 @@ public:
 
         std::cout << "\033[1;1H";
         std::cout << "Displayed pet: " << petToDraw.getName() << "\n";
-        std::cout << anims.at("snake")[animIndex];
+        std::cout << anims.at(petToDraw.getType())[animIndex];
 
         std::cout << "\033[u" << std::flush;
     }
@@ -48,41 +48,46 @@ public:
     }
 
     static void loadAnimationsFromFile(std::string path) {
-        for (const auto& entry : std::filesystem::directory_iterator(path)) {
-            std::filesystem::path filePath = entry.path(); 
-            if (std::filesystem::is_regular_file(filePath)) {
-                std::ifstream file(filePath);
-                
-                if (file.is_open()) {
-                    std::vector<std::string> frames;
-                    std::string line;
-                    std::string currentFrame = "";
+        try {
+            for (const auto& entry : std::filesystem::directory_iterator(path)) {
+                std::filesystem::path filePath = entry.path(); 
+                if (std::filesystem::is_regular_file(filePath)) {
+                    std::ifstream file(filePath);
                     
-                    // Separator
-                    const std::string separator = "SEPARATOR"; 
+                    if (file.is_open()) {
+                        std::vector<std::string> frames;
+                        std::string line;
+                        std::string currentFrame = "";
+                        
+                        // Separator
+                        const std::string separator = "SEPARATOR"; 
 
-                    while (std::getline(file, line)) {
-                        if (line == separator) {
-                            // Frame's end
-                            if (!currentFrame.empty()) {
-                                frames.push_back(currentFrame);
-                                currentFrame = ""; // Reset for next frame
+                        while (std::getline(file, line)) {
+                            if (line == separator) {
+                                // Frame's end
+                                if (!currentFrame.empty()) {
+                                    frames.push_back(currentFrame);
+                                    currentFrame = ""; // Reset for next frame
+                                }
+                            } else {
+                                // Add line to current frame
+                                currentFrame += line + "\n";
                             }
-                        } else {
-                            // Add line to current frame
-                            currentFrame += line + "\n";
                         }
+
+                        if (!currentFrame.empty()) {
+                            frames.push_back(currentFrame);
+                        }
+
+                        std::string petName = filePath.stem().string(); 
+
+                        anims.insert({ petName, frames });
                     }
-
-                    if (!currentFrame.empty()) {
-                        frames.push_back(currentFrame);
-                    }
-
-                    std::string petName = filePath.stem().string(); 
-
-                    anims.insert({ petName, frames });
                 }
             }
+        }
+        catch (const std::exception& e) {
+            std::cerr << "[!] Error while loading animation\n";
         }
     }
 };
