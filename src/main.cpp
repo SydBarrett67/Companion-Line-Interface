@@ -14,6 +14,7 @@
 #include "headers/CLI.h"
 #include "headers/TimeMachine.h"
 #include "headers/Logger.h"
+#include "headers/Renderer.h"
 
 // Game state structure
 struct State
@@ -30,12 +31,26 @@ void gameLoop(State& state)
     while (state.running)
     {
         {
+            /*
+            
+                TimeMachine state advancing
+
+            */
             std::lock_guard<std::mutex> lock(state.mtx);
-            // Advance the state of each pet based on the tick interval
             for (Pet& p : state.pets) {
                 const std::size_t timeElapsed = std::time(nullptr) - p.getLastTimeStamp();
                 TimeMachine::process(p, state.tick, timeElapsed);
             }
+
+            /*
+            
+                RENDERER (Graphical Hell)
+
+            */
+            Renderer::drawPet(state.pets.at(0));
+
+
+
         }
 
         std::this_thread::sleep_for(
@@ -64,6 +79,9 @@ void inputLoop(State& state, CLI &cli)
 
 int main(int argc, char* argv[])
 {
+    // Renderer init
+    Renderer::init_terminal();
+
     std::srand(time(0));
 
     // Global game state
@@ -78,7 +96,7 @@ int main(int argc, char* argv[])
 
     Logger logger(logPath.string(), statsPath.string());
     ConfigParser cfgParser(configPath.string());    
-    
+
     const auto& cfg = cfgParser.getConfig();
     state.tick = cfg.at("tick_s");
     cfgParser.loadPets((std::filesystem::absolute(exeDir / "../../data/pets")).string(), &state.pets);
