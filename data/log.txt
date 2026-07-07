@@ -1,6 +1,4 @@
 clear
-clear
-clear
 --help
 --help
 --help
@@ -49,3 +47,5 @@ clear
 --help
 --help
 --help
+--help
+clear

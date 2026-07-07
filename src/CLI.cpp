@@ -59,7 +59,7 @@ void CLI::executeCommand()
         }
     }
     if (this->command.substr(0, 5) == "exit" || this->command.substr(0, 4) == "quit") {
-        std::cout << "\033[30;1H\nExiting program...\n\033[?25h";
+        std::cerr << "\033[30;1H\nExiting program...\n\033[?25h";
         system("PAUSE");
         system("CLS");
         exit(0);

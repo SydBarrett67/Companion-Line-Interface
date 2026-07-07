@@ -28,6 +28,7 @@ struct State
 
 void gameLoop(State& state)
 {
+    int animIndex = 0;
     while (state.running)
     {
         {
@@ -47,10 +48,9 @@ void gameLoop(State& state)
                 RENDERER (Graphical Hell)
 
             */
-            Renderer::drawPet(state.pets.at(0));
+            Renderer::drawPet(state.pets.at(0), animIndex);
 
-
-
+            animIndex = (animIndex + 1) % 3;
         }
 
         std::this_thread::sleep_for(

@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <map>
+#include <vector>
 #include <string>
 
 #define CLIStartRow 15
@@ -13,15 +14,19 @@
 
 class Renderer {
 private:
-    std::map<std::string, int> anims;
+    inline static const std::map<std::string, std::vector<std::string>> anims = {
+        { "snake", {
+            "frame1", "frame2", "frame3"
+        } },
+    };
 
 public:
-    static void drawPet(Pet& petToDraw) {
+    static void drawPet(Pet& petToDraw, int animIndex) {
         std::cout << "\033[s";
 
         std::cout << "\033[1;1H";
-        std::cout << "=== PET PANEL ===\n";
-        std::cout << "[ ASCII ART ]\n";
+        std::cout << "Displayed pet: " << petToDraw.getName() << "\n";
+        std::cout << anims.at("snake")[animIndex];
 
         std::cout << "\033[u" << std::flush;
     }
