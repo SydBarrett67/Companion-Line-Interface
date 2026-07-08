@@ -32,7 +32,7 @@ private:
         "--help",       // Prints command list and usages
 
         // CLI Utilities
-        "clear", "cls"  // Clears the screen
+        "clear", "cls", // Clears the screen
         "exit", "quit"  // Aliases to quit the game  
     };
     std::string command;

@@ -10,7 +10,7 @@
 #include <string>
 
 #define CLIStartRow 15
-#define CLIEndRow 30
+#define CLIEndRow 80
 
 class Renderer {
 private:
@@ -44,7 +44,7 @@ public:
         std::cout << "\033[15;r"; 
 
         // Cursor on CLI start
-        std::cout << "\033[30;1H" << std::flush;
+        std::cout << "\033[80;1H" << std::flush;
     }
 
     static void loadAnimationsFromFile(std::string path) {
@@ -58,20 +58,29 @@ public:
                         std::vector<std::string> frames;
                         std::string line;
                         std::string currentFrame = "";
+                        int currentLineCount = 0;
                         
                         // Separator
                         const std::string separator = "SEPARATOR"; 
 
                         while (std::getline(file, line)) {
+
                             if (line == separator) {
-                                // Frame's end
                                 if (!currentFrame.empty()) {
+                                    while (currentLineCount < 14) {
+                                        currentFrame += std::string(80, ' ') + "\n";
+                                        currentLineCount++;
+                                    }
                                     frames.push_back(currentFrame);
-                                    currentFrame = ""; // Reset for next frame
+                                    currentFrame = ""; // Reset
+                                    currentLineCount = 0;
                                 }
                             } else {
-                                // Add line to current frame
+                                if (line.length() < 80) {
+                                    line.append(80 - line.length(), ' ');
+                                }
                                 currentFrame += line + "\n";
+                                currentLineCount++;
                             }
                         }
 
@@ -90,5 +99,12 @@ public:
             std::cerr << "[!] Error while loading animation\n";
         }
     }
+
+    static int getFrameCountForPet(Pet& toProcess) {
+        std::string type = toProcess.getType();
+
+        return anims.at(type).size();
+    }
 };
+
 

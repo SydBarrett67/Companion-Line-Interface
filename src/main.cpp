@@ -50,7 +50,7 @@ void gameLoop(State& state)
             */
             Renderer::drawPet(state.pets.at(0), animIndex);
 
-            animIndex = (animIndex + 1) % 2;
+            animIndex = (animIndex + 1) % Renderer::getFrameCountForPet(state.pets.at(0));
         }
 
         std::this_thread::sleep_for(

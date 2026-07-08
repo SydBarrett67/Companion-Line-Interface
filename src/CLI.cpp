@@ -25,7 +25,7 @@ void CLI::parseCommand(std::string command)
         this->command = command;
         this->executeCommand();
     } else {
-        std::cout << "\033[30;1H\033[K\033[1;31mCommand not recognized: " << cmd << "\033[0m\n";
+        std::cout << "\033[3m\033[30;1H\033[K\033[1;31mCommand not recognized: " << cmd << "\033[0m\n";
     }
 }
 
@@ -38,12 +38,20 @@ void CLI::executeCommand()
 
     // Pet interaction
     if (this->command.substr(0, 4) == "feed") {
-        std::string target = this->command.substr(5, this->command.find(' ', 5) - 5);
-        this->feed(target);
+        size_t space_pos = this->command.find(' ', 4); 
+        
+        if (space_pos != std::string::npos) {
+            std::string target = this->command.substr(space_pos + 1); 
+            this->feed(target);
+        }
     }
-    if (this->command.substr(0, 5) == "water") {
-        std::string target = this->command.substr(5, this->command.find(' ', 5) - 5);
-        this->water(target);
+    else if (this->command.substr(0, 5) == "water") {
+        size_t space_pos = this->command.find(' ', 5); 
+        
+        if (space_pos != std::string::npos) {
+            std::string target = this->command.substr(space_pos + 1); 
+            this->water(target);
+        }
     }
 
 
@@ -59,7 +67,7 @@ void CLI::executeCommand()
         }
     }
     if (this->command.substr(0, 5) == "exit" || this->command.substr(0, 4) == "quit") {
-        std::cerr << "\033[30;1H\nExiting program...\n\033[?25h";
+        std::cerr << "\033[3m\033[30;1H\nExiting program...\n\033[?25h";
         system("PAUSE");
         system("CLS");
         exit(0);
@@ -81,7 +89,7 @@ void CLI::createNewPet()
     ss >> cmd >> name >> type >> gender;
 
     if (name.empty() || type.empty() || gender.empty()) {
-        std::cerr << "[!] Usage: -new <name> <type> <gender>\n";
+        std::cerr << "\033[31m[!] Usage: -new <name> <type> <gender>\n";
         return;
     }
 
@@ -112,7 +120,7 @@ void CLI::createNewPet()
 
     } 
     catch (const std::out_of_range& e) {
-        std::cerr << "[!] Type: '" << type 
+        std::cerr << "\033[31m[!] Type: '" << type 
                   << "' not configured correctly.\n"
                   << "(Details: " << e.what() << ")\n";
     }
@@ -131,13 +139,13 @@ void CLI::feed(std::string target)
         }
         if (petToFeed) {
             petToFeed->feed();
-            std::cout << target << "  has been fed successfully!\n";
+            std::cout << target << " has been fed successfully!\n";
         } else {
-            std::cerr << "[!] Usage: feed <pet_name>\n";
+            std::cerr << "\033[31m[!] Usage: feed <pet_name>\033[0m\n";
         }
     }
     else {
-        std::cerr << "[!] Usage: feed <pet_name>\n";
+        std::cerr << "\033[31m[!] Usage: feed <pet_name>\033[0m\n";
         return;
     }
 }
@@ -153,20 +161,20 @@ void CLI::water(std::string target)
         }
         if (petToWater) {
             petToWater->water();
-            std::cout << target << "  has been successfully given water!";
+            std::cout << target << " has been successfully given water!\n";
         } else {
-            std::cerr << "[!] Usage: water <pet_name>\n";
+            std::cerr << "\033[31m[!] Usage: water <pet_name>\033[0m\n";
         }
     }
     else {
-        std::cerr << "[!] Usage: water <pet_name>\n";
+        std::cerr << "\033[31m[!] Usage: water <pet_name>\033[0m\n";
         return;
     }
 }
 
 // "-help" command
 void CLI::help() {
-    std::cout   << "Command list:\n"
+    std::cout   << "\033[3mCommand list:\n"
                 << "COMMAND     |   USAGE\n"
                 << "-new        :   -new <name> <type> <gender>\n"    // Create new animal
                 << "-checkout   :   -checkout <name>\n"               // Select another animal from list
@@ -182,7 +190,7 @@ void CLI::help() {
     // Game commands
                 << "--save      :   --save\n"     // Forces saving on all animals if needed
                 << "--load      :   --load\n"     // Reloads all animals if needed
-                << "--help      :   --help\n";    // Prints all commands usages
+                << "--help      :   --help\033[0m\n";    // Prints all commands usages
 }
 
 CLI::~CLI()
