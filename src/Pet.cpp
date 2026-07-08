@@ -1,7 +1,7 @@
 #include <string>
 #include <fstream>
 #include <algorithm>
-#include <random>
+#include <cstdlib>
 #include "headers/Vars.h"
 #include "headers/Pet.h"
 
@@ -109,8 +109,10 @@ void Pet::increaseAge(std::size_t tick, std::size_t timeElapsed) {
     this->age += timeElapsed / tick;
     if (this->age > this->lifespan) this->age = this->lifespan;
 }
-
-
+void Pet::getSick(std::size_t tick, std::size_t timeElapsed) {
+    unsigned long long largeRand = ((unsigned long long)rand() << 32) | rand();
+    this->isSick = (largeRand % this->sickchance) == 0;
+}
 
 // Saving and data handling
 void Pet::saveToFile(std::string path, std::string filename) {

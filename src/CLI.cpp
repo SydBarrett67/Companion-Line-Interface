@@ -8,6 +8,7 @@
 #include "headers/Pet.h"
 #include "headers/Vars.h"
 #include "headers/Logger.h"
+#include "headers/MinigamesManager.h"
 
 #define CLIStartRow 15
 #define CLIEndRow 30
@@ -45,7 +46,7 @@ void CLI::executeCommand()
             this->feed(target);
         }
     }
-    else if (this->command.substr(0, 5) == "water") {
+    if (this->command.substr(0, 5) == "water") {
         size_t space_pos = this->command.find(' ', 5); 
         
         if (space_pos != std::string::npos) {
@@ -53,7 +54,9 @@ void CLI::executeCommand()
             this->water(target);
         }
     }
-
+    if (this->command.substr(0, 4) == "play") {
+        
+    }
 
     // Game commands
     if (this->command.substr(0, 6) == "--help") {

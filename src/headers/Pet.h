@@ -58,6 +58,7 @@ public:
     void increaseThirst(std::size_t tick = 1000, std::size_t timeElapsed = 1000);
     void decreaseMood(std::size_t tick = 1000, std::size_t timeElapsed = 1000);
     void increaseAge(std::size_t tick = 1000, std::size_t timeElapsed = 1000);
+    void getSick(std::size_t tick = 1000, std::size_t timeElapsed = 1000);
 
     void saveToFile(std::string path, std::string filename);
 

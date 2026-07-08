@@ -1,0 +1,7 @@
+class MinigamesManager
+{
+private:
+
+public:
+    
+};
