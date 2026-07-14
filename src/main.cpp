@@ -45,7 +45,7 @@ void gameLoop(State& state)
 
             /*
             
-                RENDERER (Graphical Hell)
+                RENDERER
 
             */
             Renderer::drawPet(state.pets.at(0), animIndex);

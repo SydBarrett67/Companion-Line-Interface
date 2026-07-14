@@ -16,3 +16,25 @@ water Squamo
 clear
 --help
 clear
+clear
+water Squamo
+clear
+water Squamo
+feed Squamo
+feed Squamo
+water Squamo
+clear
+--help
+clear
+clear
+--help
+clear
+feed Squamo
+water Squamo
+clear
+feed Squamo
+water Squamo
+--help
+clear
+--help
+clear
