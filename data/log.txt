@@ -38,3 +38,6 @@ water Squamo
 clear
 --help
 clear
+play snake Squamo
+play snake Squamo
+play snake Squamo

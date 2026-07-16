@@ -57,6 +57,7 @@ public:
     void increaseHunger(std::size_t tick = 1000, std::size_t timeElapsed = 1000);
     void increaseThirst(std::size_t tick = 1000, std::size_t timeElapsed = 1000);
     void decreaseMood(std::size_t tick = 1000, std::size_t timeElapsed = 1000);
+    void increaseMood(std::size_t amount);
     void increaseAge(std::size_t tick = 1000, std::size_t timeElapsed = 1000);
     void getSick(std::size_t tick = 1000, std::size_t timeElapsed = 1000);
 

@@ -7,8 +7,15 @@
 
 // Global variables
 std::size_t gameTick = 750;
-const int N = 10;
+bool running = true;
+int counter = 0;
+std::string playerName = "";
+
+// Grid size and grid
+const int N = 11;
 int grid[N][N];
+
+// Direction enumerator
 enum Direction {
     UP,
     DOWN,
@@ -31,12 +38,6 @@ struct Apple {
 };
 
 
-bool check() {
-
-
-    return true;
-}
-
 void step(Direction dir, bool addCell) {
     std::pair<int,int> newHeadPos = player.cells.front();
 
@@ -48,6 +49,25 @@ void step(Direction dir, bool addCell) {
         case RIGHT: newHeadPos.first++;  break;
     }
 
+    // Wall detection
+    if (newHeadPos.first == 0
+        || newHeadPos.first == N-1
+        || newHeadPos.second == 0
+        || newHeadPos.second == N-1
+    ) {
+        running = false;
+        std::cout << "Hai perso!";
+    }
+
+    for (auto cell : player.cells) {
+        // Self intersect case
+        if (newHeadPos == cell) {
+            running = false;
+            std::cout << "Hai perso!";
+        }
+    }
+        
+            
     player.cells.push_front(newHeadPos);
 
     if (!addCell)
@@ -58,8 +78,8 @@ Apple getApplePosition() {
 
     int x,y;
     do {
-        x = rand() % N;
-        y = rand() % N;
+        x = (rand() % (N - 2)) + 1;
+        y = (rand() % (N - 2)) + 1;
     } while (grid[y][x] > 0);
 
     grid[y][x] = 3;
@@ -97,62 +117,71 @@ void draw()
     HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleCursorPosition(h, {0, 0});
 
+    std::cout << playerName << " is playing!!\n";
+
     for (int y = 0; y < N; y++)
     {
         for (int x = 0; x < N; x++)
         {
-            switch (grid[y][x])
-            {
-                case 0: std::cout << "  "; break;
-                case 1: std::cout << "o "; break;
-                case 2: std::cout << "O "; break;
-                case 3: std::cout << "@ "; break;
+            if (   x == 0 
+                || x == N-1
+                || y == 0
+                || y == N-1
+            ) std::cout << "# ";
+            else {
+                switch (grid[y][x])
+                {
+                    case 0: std::cout << "  "; break;
+                    case 1: std::cout << "o "; break;
+                    case 2: std::cout << "O "; break;
+                    case 3: std::cout << "@ "; break;
+                }
             }
         }
-        std::cout << '\n';
+        std::cout << "\n";
     }
+    std::cout << "Apples eaten: " << counter << "\n";
 
     std::cout.flush();
 }
 
 int main(int argc, char* argv[]) {
-    if (argc > 1) std::string playerName = argv[1];
+    if (argc > 1) playerName = argv[1];
     else return -1;
     
     system("CLS");
 
     Direction dir = LEFT;
-    
+    Direction lastExecutedDir = LEFT;
+
     Apple apple = getApplePosition();
 
     auto lastMove = std::chrono::steady_clock::now();
 
-    while (check()) {;
+    while (running) {;
 
-        if (GetAsyncKeyState(VK_UP) & 0x8000) {
-            dir = UP;
-        }
-        else if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
-            dir = DOWN;
-        }
-        else if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
-            dir = LEFT;
-        }
-        else if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
-            dir = RIGHT;
-        }
+        if      (GetAsyncKeyState(VK_UP)    & 0x8000 && lastExecutedDir != DOWN)  dir = UP;
+        else if (GetAsyncKeyState(VK_DOWN)  & 0x8000 && lastExecutedDir != UP)    dir = DOWN;
+        else if (GetAsyncKeyState(VK_LEFT)  & 0x8000 && lastExecutedDir != RIGHT) dir = LEFT;
+        else if (GetAsyncKeyState(VK_RIGHT) & 0x8000 && lastExecutedDir != LEFT)  dir = RIGHT;
 
         auto now = std::chrono::steady_clock::now();
 
         bool gotApple = false;
         if (now - lastMove >= std::chrono::milliseconds(gameTick)) {
+            if (player.cells.front() == apple.xy) gotApple = true;
 
             step(dir, gotApple);
+            lastExecutedDir = dir;        
 
-            if (gotApple)
+            if (gotApple) {
                 apple = getApplePosition();
+                gameTick *= 0.95;
+                counter++;
+            }
 
             updateGrid(apple);
+
             draw();
 
             lastMove = now;
@@ -160,4 +189,6 @@ int main(int argc, char* argv[]) {
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+
+    return counter;
 }

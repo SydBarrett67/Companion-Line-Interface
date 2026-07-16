@@ -55,10 +55,29 @@ void CLI::executeCommand()
         }
     }
     if (this->command.substr(0, 4) == "play") {
-        size_t space_pos = this->command.find(' ', 5);
-        const std::string gameName = this->command.substr(space_pos + 1); 
+        std::stringstream ss(this->command);
+        std::string cmd, gameName, petName;
 
-        MinigamesManager::startMinigame(gameName);
+        ss >> cmd >> gameName >> petName;
+
+        if (gameName.empty() || petName.empty()) {
+            std::cerr << "\033[1;31m[!] Usage: play <minigame-name> <pet_name>\033[0m\n";
+        } 
+        else {
+            Pet* targetPet = nullptr;
+            for (auto& pet : this->pets) {
+                if (pet.getName() == petName) {
+                    targetPet = &pet;
+                    break;
+                }
+            }
+
+            if (targetPet != nullptr) {
+                targetPet->increaseMood(MinigamesManager::startMinigame(gameName, petName)); 
+            } else {
+                std::cerr << "\033[1;31m[!] Pet '" << petName << "' not found!\033[0m\n";
+            }
+        }
     }
 
     // Game commands
@@ -99,7 +118,7 @@ void CLI::createNewPet()
         return;
     }
 
-    float factor = (1.0f + ((std::rand() % 21) - CLIEndRow) / 100.0f);
+    float factor = (1.0f + ((std::rand() % 21) - 10.0f) / 100.0f);
     
     try {
         Vars vars(

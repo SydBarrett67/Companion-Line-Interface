@@ -105,6 +105,9 @@ void Pet::decreaseMood(std::size_t tick, std::size_t timeElapsed) {
     this->mood -= timeElapsed / tick;
     if (this->mood < 0) this->mood = 0;
 }
+void Pet::increaseMood(std::size_t amount) {
+    this->mood += amount;
+}
 void Pet::increaseAge(std::size_t tick, std::size_t timeElapsed) {
     this->age += timeElapsed / tick;
     if (this->age > this->lifespan) this->age = this->lifespan;
