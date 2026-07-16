@@ -57,7 +57,7 @@ void CLI::executeCommand()
     if (this->command.substr(0, 4) == "play") {
         size_t space_pos = this->command.find(' ', 5);
         const std::string gameName = this->command.substr(space_pos + 1); 
-        
+
         MinigamesManager::startMinigame(gameName);
     }
 
