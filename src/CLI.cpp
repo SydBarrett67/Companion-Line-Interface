@@ -73,7 +73,10 @@ void CLI::executeCommand()
             }
 
             if (targetPet != nullptr) {
-                targetPet->increaseMood(MinigamesManager::startMinigame(gameName, petName)); 
+                size_t points = MinigamesManager::startMinigame(gameName, petName);
+                targetPet->increaseMood(points);
+
+                std::cout << targetPet->getName() << " is now " << points << " times happier!\n";
             } else {
                 std::cerr << "\033[1;31m[!] Pet '" << petName << "' not found!\033[0m\n";
             }

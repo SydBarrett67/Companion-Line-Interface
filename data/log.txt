@@ -1,16 +1,3 @@
-feed Squamo
-water Squamo
-water Squamo
-water Squamo
-clear
---help
-clear
-feed fkdfk fdlkf
-clear
---help
-clear
-feed jfkdajfk
-clear
 water Squamo
 water Squamo
 clear
@@ -41,3 +28,26 @@ clear
 play snake Squamo
 play snake Squamo
 play snake Squamo
+--help
+clear
+play snake Squamo
+play snake Squamo
+feed Squamo
+clear
+water Squamo
+clear
+play snake Squamo
+clear
+quamo
+clear
+quamo
+play snake Squamo
+clear
+play snake Squamo
+play snake Squamo
+play snake Squamo
+play snake Squamo
+play snake Squamo
+play snake Squamo
+play snake Squamo
+clear
