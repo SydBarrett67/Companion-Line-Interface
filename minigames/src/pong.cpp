@@ -2,6 +2,10 @@
 #include <chrono>
 #include <vector>
 #include <windows.h>
+#include <cstdlib>
+#include <ctime>
+
+#define MAX_POINTS 10
 
 // Directions for paddle moving
 enum Direction {
@@ -30,7 +34,7 @@ struct Ball {
 Direction calculateBotMove(const Ball& ball, const Paddle& bot) {
     int center = bot.topXY.second + (bot.length / 2);
     // Error hehe
-    bool hehe = (rand() % 100) < 5;
+    bool hehe = (rand() % 100) < 10;
     
     if (ball.xy.second < center && !hehe) {
         return UP;
@@ -43,13 +47,16 @@ Direction calculateBotMove(const Ball& ball, const Paddle& bot) {
 }
 
 void step(std::vector<std::vector<int>>& grid, Paddle& p1, Paddle& bot, Ball& ball) {
-    if (ball.xy.second >= 0 && ball.xy.second < grid.size() && ball.xy.first >= 0 && ball.xy.first < grid[0].size()) {
-        grid[ball.xy.second][ball.xy.first] = (ball.xy.first == grid[0].size() / 2) ? 123 : 0;
+    int height = grid.size();
+    int width = grid[0].size();
+
+    if (ball.xy.second >= 0 && ball.xy.second < height && ball.xy.first >= 0 && ball.xy.first < width) {
+        grid[ball.xy.second][ball.xy.first] = (ball.xy.first == width / 2) ? 123 : 0;
     }
 
-    for (int y = 0; y < grid.size(); y++) {
-        grid[y][p1.topXY.first] = (p1.topXY.first == grid[0].size() / 2) ? 123 : 0;
-        grid[y][bot.topXY.first] = (bot.topXY.first == grid[0].size() / 2) ? 123 : 0;
+    for (int y = 0; y < height; y++) {
+        grid[y][p1.topXY.first] = (p1.topXY.first == width / 2) ? 123 : 0;
+        grid[y][bot.topXY.first] = (bot.topXY.first == width / 2) ? 123 : 0;
     }
     std::vector<Paddle*> players = { &p1, &bot };
 
@@ -62,7 +69,7 @@ void step(std::vector<std::vector<int>>& grid, Paddle& p1, Paddle& bot, Ball& ba
             break;
         
         case DOWN:
-            if (player->topXY.second + player->length < grid.at(0).size()) {
+            if (player->topXY.second + player->length < height) {
                 player->topXY.second++;
             }
             break;        
@@ -74,10 +81,12 @@ void step(std::vector<std::vector<int>>& grid, Paddle& p1, Paddle& bot, Ball& ba
         player->dir = DEFAULT; 
     }
     for (int i = 0; i < p1.length; i++) {
-        grid[p1.topXY.second + i][p1.topXY.first] = 1;
+        if (p1.topXY.second + i < height)
+            grid[p1.topXY.second + i][p1.topXY.first] = 1;
     }
     for (int i = 0; i < bot.length; i++) {
-        grid[bot.topXY.second + i][bot.topXY.first] = 1;
+        if (bot.topXY.second + i < height)
+            grid[bot.topXY.second + i][bot.topXY.first] = 1;
     }
 
     // Move ball
@@ -86,23 +95,24 @@ void step(std::vector<std::vector<int>>& grid, Paddle& p1, Paddle& bot, Ball& ba
 
     // Bounces
     // Wall
-    if (ball.xy.second <= 0 || ball.xy.second >= grid.at(0).size() - 1) {
+    if (ball.xy.second <= 0 || ball.xy.second >= height - 1) {
         ball.vels.second = -ball.vels.second;
         
         if (ball.xy.second <= 0) ball.xy.second = 0;
-        if (ball.xy.second >= grid.at(0).size() - 1) ball.xy.second = grid.at(0).size() - 1;
+        if (ball.xy.second >= height - 1) ball.xy.second = height - 1;
     }
-    // Paddles
     if (ball.xy.first == p1.topXY.first) {
         if (ball.xy.second >= p1.topXY.second && ball.xy.second < p1.topXY.second + p1.length) {
             ball.vels.first = -ball.vels.first;
             ball.xy.first = p1.topXY.first + 1;
+            ball.vels.second = (rand() % 3) - 1;
         }
     }
     else if (ball.xy.first == bot.topXY.first) {
         if (ball.xy.second >= bot.topXY.second && ball.xy.second < bot.topXY.second + bot.length) {
             ball.vels.first = -ball.vels.first;
             ball.xy.first = bot.topXY.first - 1;
+            ball.vels.second = (rand() % 3) - 1;
         }
     }
 
@@ -110,25 +120,25 @@ void step(std::vector<std::vector<int>>& grid, Paddle& p1, Paddle& bot, Ball& ba
     if (ball.xy.first < 0) {
         bot.pts++;
         // Reset
-        ball.xy = { grid.at(0).size() / 2, grid.at(0).size() / 2 };
+        ball.xy = { width / 2, height / 2 };
         ball.vels.first = 1;
-        ball.vels.second = (rand() % 2 == 0) ? 1 : -1;
+        ball.vels.second = (rand() % 3) - 1;
     } 
-    else if (ball.xy.first >= grid.at(0).size()) {
+    else if (ball.xy.first >= width) {
         p1.pts++;
         // reset
-        ball.xy = { grid.at(0).size() / 2, grid.at(0).size() / 2 };
+        ball.xy = { width / 2, height / 2 };
         ball.vels.first = -1;
-        ball.vels.second = (rand() % 2 == 0) ? 1 : -1;
+        ball.vels.second = (rand() % 3) - 1;
     }
 
-    if (ball.xy.second >= 0 && ball.xy.second < grid.at(0).size() && ball.xy.first >= 0 && ball.xy.first < grid.at(0).size()) {
+    if (ball.xy.second >= 0 && ball.xy.second < height && ball.xy.first >= 0 && ball.xy.first < width) {
         grid[ball.xy.second][ball.xy.first] = 2;
     }
 }
 
-void draw(std::vector<std::vector<int>>& grid) {
-    for (auto row : grid) {
+void draw(const std::vector<std::vector<int>>& grid) {
+    for (const auto& row : grid) {
         for (auto cell : row) {
             switch(cell) {
                 case 0:
@@ -172,40 +182,39 @@ int main(int argc, char* argv[]) {
     auto lastMove = std::chrono::steady_clock::now();
 
     // Game grid
-    const int N = 21;
-    std::vector<std::vector<int>> grid(N, std::vector<int>(N, 0));
+    const int HEIGHT = 21;
+    const int WIDTH = 42;
+    
+    std::vector<std::vector<int>> grid(HEIGHT, std::vector<int>(WIDTH, 0));
     for (auto &row : grid) {
-        for (int i=0;i<N;i++) {
-            if (i == N/2) row.at(i) = 123;
-            else row.at(i) = 0;
-        }
+        row[WIDTH / 2] = 123;
     }
 
     // Init player and bot
     Paddle Player = {
         3,
-        { 1, N / 2 - 1 },
+        { 1, HEIGHT / 2 - 1 },
         DEFAULT,
         0
     };
     Paddle Bot = {
         3,
-        { N - 2, N / 2 - 1 },
+        { WIDTH - 2, HEIGHT / 2 - 1 },
         DEFAULT,
         0
     };
 
-    srand(time(NULL));
+    srand(static_cast<unsigned int>(time(NULL)));
     Ball ball = {
-        { (rand() % 2 == 0) ? 1 : -1, (rand() % 2 == 0) ? 1 : -1 },
-        { N/2, N/2 }
+        { (rand() % 2 == 0) ? 1 : -1, (rand() % 3) - 1 },
+        { WIDTH / 2, HEIGHT / 2 }
     };
 
     // Main loop
     while (running) {
-        if      (GetAsyncKeyState(VK_UP)   & 0x8000)   Player.dir  = UP;
-        else if (GetAsyncKeyState(VK_DOWN) & 0x8000)   Player.dir  = DOWN;
-        else if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) running = false;
+        if      (GetAsyncKeyState(VK_UP)    & 0x8000)   Player.dir  = UP;
+        else if (GetAsyncKeyState(VK_DOWN)  & 0x8000)   Player.dir  = DOWN;
+        else if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)  running = false;
 
         auto now = std::chrono::steady_clock::now();
 
@@ -221,8 +230,10 @@ int main(int argc, char* argv[]) {
     
             lastMove = now;
 
-            std::cout << "\n" << playerName << ": " << Player.pts << " | Bot: " << Bot.pts << "    \n";
+            std::cout << "\n" << playerName << ": " << Player.pts << "\nBot: " << Bot.pts << "\n";
         }
+
+        if (Player.pts >= MAX_POINTS || Bot.pts >= MAX_POINTS) running = false;
     }
 
     return Player.pts;

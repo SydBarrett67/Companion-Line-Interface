@@ -1,53 +1,19 @@
-water Squamo
-water Squamo
+play pong
+play pong Squamo
+cls
 clear
---help
+cls
+play pong Squamo
+play pong Squamo
 clear
+play pong Squamo
+play pong Squamo
+play pong Squamo
+play pong Squamo
+play pong Squamo
+play pong Squamo
+play pong Squamo
 clear
-water Squamo
-clear
-water Squamo
-feed Squamo
-feed Squamo
-water Squamo
-clear
---help
-clear
-clear
---help
-clear
-feed Squamo
-water Squamo
-clear
-feed Squamo
-water Squamo
---help
-clear
---help
-clear
-play snake Squamo
-play snake Squamo
-play snake Squamo
---help
-clear
-play snake Squamo
-play snake Squamo
-feed Squamo
-clear
-water Squamo
-clear
-play snake Squamo
-clear
-quamo
-clear
-quamo
-play snake Squamo
-clear
-play snake Squamo
-play snake Squamo
-play snake Squamo
-play snake Squamo
-play snake Squamo
-play snake Squamo
-play snake Squamo
-clear
+play pong Squamo
+play pong Squamo
+play pong Squamo

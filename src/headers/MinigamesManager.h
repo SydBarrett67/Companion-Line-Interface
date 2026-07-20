@@ -5,6 +5,7 @@ class MinigamesManager
 private:
     enum GAMES {
         SNAKE,
+        PONG,
 
         // Default fallback
         UNKNOWN
@@ -12,7 +13,13 @@ private:
 
     // Helper conversion function
     static GAMES stringToEnum(const std::string& gameName) {
-        if (gameName == "snake")  return SNAKE;
+        std::string lowercased;
+        for (char x : gameName) {
+            lowercased += tolower(x);
+        }
+
+        if (lowercased == "snake")   return SNAKE;
+        if (lowercased == "pong")    return PONG;
         
         return UNKNOWN;
     }
@@ -39,9 +46,13 @@ public:
                 std::cout << "\" S n a k e \"   m i n i g a m e   b o o t e d\n";
                 break;
             
+            case PONG:
+                command = targetDir + "\\pong.exe " + petName;
+                std::cout << "\" P o n g \"   m i n i g a m e   b o o t e d\n";
+                break; 
             default:
                 std::cerr << "\033[3m\033[30;1H\033[K\033[1;31m[!] Unknown minigame: " << gameName << "\033[0m\n";
-                return -1;
+                return 0;
         }
 
         STARTUPINFOA si;

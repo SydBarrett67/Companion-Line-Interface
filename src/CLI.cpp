@@ -60,28 +60,8 @@ void CLI::executeCommand()
 
         ss >> cmd >> gameName >> petName;
 
-        if (gameName.empty() || petName.empty()) {
-            std::cerr << "\033[1;31m[!] Usage: play <minigame-name> <pet_name>\033[0m\n";
-        } 
-        else {
-            Pet* targetPet = nullptr;
-            for (auto& pet : this->pets) {
-                if (pet.getName() == petName) {
-                    targetPet = &pet;
-                    break;
-                }
-            }
-
-            if (targetPet != nullptr) {
-                size_t points = MinigamesManager::startMinigame(gameName, petName);
-                targetPet->increaseMood(points);
-
-                std::cout << targetPet->getName() << " is now " << points << " times happier!\n";
-            } else {
-                std::cerr << "\033[1;31m[!] Pet '" << petName << "' not found!\033[0m\n";
-            }
-        }
-    }
+        this->play(gameName, petName);
+    }        
 
     // Game commands
     if (this->command.substr(0, 6) == "--help") {
@@ -197,6 +177,32 @@ void CLI::water(std::string target)
     else {
         std::cerr << "\033[31m[!] Usage: water <pet_name>\033[0m\n";
         return;
+    }
+}
+
+// Play command
+void CLI::play(std::string gameName, std::string petName) {
+
+    if (gameName.empty() || petName.empty()) {
+            std::cerr << "\033[1;31m[!] Usage: play <minigame-name> <pet_name>\033[0m\n";
+    } 
+    else {
+        Pet* targetPet = nullptr;
+        for (auto& pet : this->pets) {
+            if (pet.getName() == petName) {
+                targetPet = &pet;
+                break;
+            }
+        }
+
+        if (targetPet != nullptr) {
+            size_t points = MinigamesManager::startMinigame(gameName, petName);
+            targetPet->increaseMood(points * 1000);
+
+            if (points != 0) std::cout << targetPet->getName() << " is now " << points << " times happier!\n";
+        } else {
+            std::cerr << "\033[1;31m[!] Pet '" << petName << "' not found!\033[0m\n";
+        }
     }
 }
 

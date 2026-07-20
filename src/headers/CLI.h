@@ -51,6 +51,9 @@ public:
     void feed(std::string target);
     void water(std::string target);
 
+    // Play
+    void play(std::string gameName, std::string petName);
+
 
     // "-help"
     void help();
