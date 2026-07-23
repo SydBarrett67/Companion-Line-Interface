@@ -2,6 +2,7 @@
 #include <map>
 #include <sstream>
 #include <cstdlib>
+#include <algorithm>
 #include <filesystem>
 
 #include "headers/CLI.h"
@@ -35,6 +36,16 @@ void CLI::executeCommand()
     // Pet creation
     if (this->command.substr(0, 4) == "-new") {
         this->createNewPet();
+    }
+
+    // Select pet to show
+    if (this->command.substr(0, 9) == "-checkout") {
+        std::stringstream ss(this->command);
+        std::string cmd, petName;
+
+        ss >> cmd >> petName;
+
+        this->checkout(petName);
     }
 
     // Pet interaction
@@ -131,6 +142,25 @@ void CLI::createNewPet()
         std::cerr << "\033[31m[!] Type: '" << type 
                   << "' not configured correctly.\n"
                   << "(Details: " << e.what() << ")\n";
+    }
+}
+void CLI::checkout(std::string petName) {
+    if (!petName.empty()) {
+        Pet *petToCheckout = nullptr;
+        for (auto& pet : this->pets) {
+            if (pet.getName() == petName) {
+                petToCheckout = &pet;
+                break;
+            }
+        }
+
+
+        if (petToCheckout != nullptr) {
+            std::swap(this->pets[0], *petToCheckout);
+            std::cout << petName << " now displaying!\n";
+        } else {
+            std::cout << "\033[31m[!] Pet not found!\n";
+        }
     }
 }
 

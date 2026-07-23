@@ -46,6 +46,7 @@ public:
 
     // COMMAND FUNCTIONS
     void createNewPet();
+    void checkout(std::string petName);
 
     // Interaction commands
     void feed(std::string target);

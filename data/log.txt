@@ -1,0 +1,11 @@
+feed Suqmao
+feed Squamo
+water Squamo
+clear
+-new Squametta snake F
+-checkout Squametta
+-checkout Squamo
+-new Minnie rabbit F
+-checkout Squamo
+clear
+-checkout Squamo
