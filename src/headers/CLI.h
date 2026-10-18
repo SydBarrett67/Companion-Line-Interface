@@ -51,6 +51,7 @@ public:
     // Interaction commands
     void feed(std::string target);
     void water(std::string target);
+    void readStats(std::string target);
 
     // Play
     void play(std::string gameName, std::string petName);

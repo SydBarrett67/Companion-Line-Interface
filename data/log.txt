@@ -9,3 +9,14 @@ clear
 -checkout Squamo
 clear
 -checkout Squamo
+cls
+-checkout Squametta
+cls
+-checkout squamo
+-checkout squametto
+-checkout squametta
+-checkout Squametta
+cls
+feed Squametta
+water Squametta
+clear

@@ -38,6 +38,16 @@ void CLI::executeCommand()
         this->createNewPet();
     }
 
+    // Pet stats
+    if (this->command.substr(0, 6) == "-stats) {
+    	std::stringstream ss(this->command);
+        std::string cmd, petName;
+
+        ss >> cmd >> petName;
+
+        this->readStats(petName);
+    }
+
     // Select pet to show
     if (this->command.substr(0, 9) == "-checkout") {
         std::stringstream ss(this->command);
@@ -233,6 +243,28 @@ void CLI::play(std::string gameName, std::string petName) {
         } else {
             std::cerr << "\033[1;31m[!] Pet '" << petName << "' not found!\033[0m\n";
         }
+    }
+}
+
+void CLI::readStats(std::string petName) {
+    if (!target.empty()) {
+        Pet *petToRead = nullptr;
+        for (auto& pet : this->pets) {
+            if (pet.getName() == target) {
+                petToRead = &pet;
+                break;
+            }
+        }
+        if (petToRead) {
+	    
+            std::cout << string;
+	} else {
+            std::cerr << "\033[31m[!] Usage: water <pet_name>\033[0m\n";
+        }
+    }
+    else {
+        std::cerr << "\033[31m[!] Usage: water <pet_name>\033[0m\n";
+        return;
     }
 }
 
