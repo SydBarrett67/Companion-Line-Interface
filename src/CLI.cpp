@@ -39,7 +39,7 @@ void CLI::executeCommand()
     }
 
     // Pet stats
-    if (this->command.substr(0, 6) == "-stats) {
+    if (this->command.substr(0, 6) == "-stats") {
     	std::stringstream ss(this->command);
         std::string cmd, petName;
 
@@ -91,7 +91,7 @@ void CLI::executeCommand()
 
     // CLI utilities
     if (this->command.substr(0, 5) == "clear" || this->command.substr(0,3) == "cls") {
-        for (int i = CLIStartRow; i <= CLIEndRow; ++i) {
+        for (int i = CLIStartRow; i <= CLIEndRow; i++) {
             std::cout << "\033[" << i << ";1H\033[K";
         }
     }
@@ -246,24 +246,25 @@ void CLI::play(std::string gameName, std::string petName) {
     }
 }
 
+// Read selected pet stats (hp, mood, etc.)
 void CLI::readStats(std::string petName) {
-    if (!target.empty()) {
+    if (!petName.empty()) {
         Pet *petToRead = nullptr;
         for (auto& pet : this->pets) {
-            if (pet.getName() == target) {
+            if (pet.getName() == petName) {
                 petToRead = &pet;
                 break;
             }
         }
         if (petToRead) {
-	    
-            std::cout << string;
-	} else {
-            std::cerr << "\033[31m[!] Usage: water <pet_name>\033[0m\n";
+            petToRead->stats();
+            
+        } else {
+            std::cerr << "\033[31m[!] Usage: -stats <pet_name>\033[0m\n";
         }
     }
     else {
-        std::cerr << "\033[31m[!] Usage: water <pet_name>\033[0m\n";
+        std::cerr << "\033[31m[!] Usage: -stats <pet_name>\033[0m\n";
         return;
     }
 }

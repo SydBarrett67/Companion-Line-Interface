@@ -1,0 +1,4 @@
+TODO:
+1 - i want the pet stats displayable
+2 - pet death
+3 - rabbit animation

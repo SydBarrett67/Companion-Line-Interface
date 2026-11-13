@@ -61,6 +61,8 @@ public:
     void increaseAge(std::size_t tick = 1000, std::size_t timeElapsed = 1000);
     void getSick(std::size_t tick = 1000, std::size_t timeElapsed = 1000);
 
+    // Read stats
+    void stats();
     void saveToFile(std::string path, std::string filename);
 
     ~Pet();

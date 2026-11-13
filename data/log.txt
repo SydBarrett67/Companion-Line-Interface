@@ -1,22 +1,68 @@
-feed Suqmao
-feed Squamo
-water Squamo
 clear
--new Squametta snake F
--checkout Squametta
--checkout Squamo
--new Minnie rabbit F
--checkout Squamo
-clear
--checkout Squamo
-cls
--checkout Squametta
-cls
--checkout squamo
--checkout squametto
--checkout squametta
+--help
 -checkout Squametta
 cls
 feed Squametta
 water Squametta
 clear
+-checkout Squametta
+clear
+cls
+clear
+feed Squametta
+cls
+water Squametta
+cls
+cls
+cls
+cls
+clear
+clear
+clear
+-stats
+cls
+cls
+clear
+-checkout Squametta
+cls
+--help
+cls
+clear
+-stats Squametta
+-checkout Squametta
+-stats Squametta
+clear
+-stats Minnie
+
+clear
+-stats Minnie
+lear
+-stats Minnie
+r
+-stats Squametta
+
+r
+-stats Minnie
+
+-stats Squametta
+-checkout Squametta
+cls
+clear
+uametta
+cls
+clear
+cls
+
+cls
+clear
+-stats Squametta
+
+feed Squametta
+a
+
+water Squametta
+
+
+clear
+-stats Squmetta
+-stats Squametta
