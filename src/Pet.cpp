@@ -122,7 +122,6 @@ void Pet::getSick(std::size_t tick, std::size_t timeElapsed) {
 
 // Read stats
 void Pet::stats() {
-
     std::filesystem::path folderPath = std::filesystem::absolute("data/pets/");
     std::string filename = this->name + ".pet";
 
@@ -130,32 +129,21 @@ void Pet::stats() {
 
     std::filesystem::path fullFilePath = folderPath / filename;
 
-    // Open file
     std::ifstream file(fullFilePath);
-
     if (file.is_open()) {
 
-        std::cout << "name=" << this->name << "\n";
-        std::cout << "type=" << this->type << "\n";
-        std::cout << "gender=" << this->gender << "\n";
-        std::cout << "hp=" << this->hp << "\n";
-        std::cout << "mood=" << this->mood << "\n";
-        std::cout << "age=" << this->age << "\n";
-        std::cout << "isSick=" << this->isSick << "\n";
-        std::cout << "hunger=" << this->hunger << "\n";
-        std::cout << "thirst=" << this->thirst << "\n";
-        std::cout << "hungermax=" << this->hungerMax << "\n";
-        std::cout << "thirstmax=" << this->thirstMax << "\n";
-        std::cout << "moodmax=" << this->moodMax << "\n";
-        std::cout << "sickchance=" << this->sickchance << "\n";
-        std::cout << "lifespan=" << this->lifespan << "\n";
-        std::cout << "timestamp=" << std::time(nullptr) << "\n";
+        std::string line;
+
+        while (std::getline(file, line)) {
+            std::cout << line << "\n";
+        }
+
         file.close();
     }
     else {
-        std::cout << "\033[31m clearly the path is wrong\033[0m\n";
+        std::cerr << "\033[31mCould not open file: "
+                  << fullFilePath << "\033[0m\n";
     }
-
 }
 
 // Saving and data handling

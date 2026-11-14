@@ -1,33 +1,4 @@
 clear
---help
--checkout Squametta
-cls
-feed Squametta
-water Squametta
-clear
--checkout Squametta
-clear
-cls
-clear
-feed Squametta
-cls
-water Squametta
-cls
-cls
-cls
-cls
-clear
-clear
-clear
--stats
-cls
-cls
-clear
--checkout Squametta
-cls
---help
-cls
-clear
 -stats Squametta
 -checkout Squametta
 -stats Squametta
@@ -66,3 +37,37 @@ water Squametta
 clear
 -stats Squmetta
 -stats Squametta
+clear
+-stats Minnie
+cls
+
+-stats Minnie
+clear
+-stats Squametta
+-stats Squametta
+-checkout Squametta
+clear
+ut Squametta
+-stats Squametta
+-stats Squametta
+-stats Squametta
+-stats Squametta
+-stats Squametta
+-stats Squametta
+feed Squamo
+feed Squametta
+feed Minnie
+clear
+clear
+clear
+water Squamo
+water Minnie
+water Squametta
+clear
+cls
+
+play Pong Squametta
+clear
+clear
+
+play
